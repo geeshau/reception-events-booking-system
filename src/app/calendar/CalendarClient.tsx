@@ -3,13 +3,14 @@
 import * as React from "react"
 import { Calendar, momentLocalizer, Event as RBCEvent } from "react-big-calendar"
 import moment from "moment"
-import { format } from "date-fns" // Only keeping format for manual parsing if used later in UI strings
+import { format } from "date-fns"
 import "react-big-calendar/lib/css/react-big-calendar.css"
-import { deleteEvent, updatePaymentStatus } from "@/app/actions/events"
+import { deleteEvent } from "@/app/actions/events"
+import { getInvoiceByEventId, createInvoiceForEvent, markInvoicePaid } from "@/app/actions/invoices"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { X, Clock, MapPin, AlignLeft, User, Plus, Printer, Banknote, CreditCard } from "lucide-react"
+import { X, Clock, MapPin, AlignLeft, Plus, Printer } from "lucide-react"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
@@ -31,6 +32,8 @@ export default function CalendarClient({ initialEvents }: { initialEvents: BigEv
   const [events, setEvents] = React.useState<BigEvent[]>(initialEvents)
   const [selectedEvent, setSelectedEvent] = React.useState<BigEvent | null>(null)
   const [view, setView] = React.useState<'month' | 'week' | 'day' | 'agenda'>('month')
+  const [invoice, setInvoice] = React.useState<any>(null)
+  const [loadingInvoice, setLoadingInvoice] = React.useState(false)
   
   // Track viewport boundary dynamically to strictly export what the user is safely viewing
   const [currentRange, setCurrentRange] = React.useState<{ start: Date, end: Date }>({
@@ -38,8 +41,52 @@ export default function CalendarClient({ initialEvents }: { initialEvents: BigEv
     end: moment().endOf('month').toDate()
   })
 
+  React.useEffect(() => {
+    const load = async () => {
+      if (!selectedEvent) {
+        setInvoice(null)
+        return
+      }
+      setLoadingInvoice(true)
+      try {
+        const inv = await getInvoiceByEventId(selectedEvent.id)
+        setInvoice(inv)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoadingInvoice(false)
+      }
+    }
+    load()
+  }, [selectedEvent])
+
   const handleSelectEvent = (event: BigEvent) => {
     setSelectedEvent(event)
+  }
+
+  const handleCreateInvoice = async () => {
+    if (!selectedEvent) return
+    try {
+      const inv = await createInvoiceForEvent(selectedEvent.id, {
+        amount: selectedEvent.total_cost || 0,
+      })
+      setInvoice(inv)
+      alert("Draft invoice created")
+    } catch (e: any) {
+      alert(e.message || "Failed to create invoice")
+    }
+  }
+
+  const handleMarkPaid = async () => {
+    if (!invoice) return
+    try {
+      await markInvoicePaid(invoice.id, selectedEvent?.total_cost)
+      setInvoice({ ...invoice, status: 'paid' })
+      alert("Invoice marked as paid")
+      router.refresh()
+    } catch (e: any) {
+      alert(e.message || "Failed to mark paid")
+    }
   }
 
   const handleDelete = async (id: number | string) => {
@@ -251,6 +298,34 @@ export default function CalendarClient({ initialEvents }: { initialEvents: BigEv
 
                </div>
                
+             </div>
+             {/* Invoice Section */}
+             <div className="px-6 py-4 border-t border-gray-100 dark:border-slate-800 space-y-3">
+               <div className="flex items-center justify-between">
+                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Invoice</span>
+                 {loadingInvoice ? (
+                   <span className="text-xs text-gray-400">Loading...</span>
+                 ) : invoice ? (
+                   <span className="text-xs uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">{invoice.status}</span>
+                 ) : (
+                   <span className="text-xs text-gray-400">None</span>
+                 )}
+               </div>
+               <div className="flex flex-wrap gap-2">
+                 {!invoice && (
+                   <Button size="sm" variant="outline" onClick={handleCreateInvoice}>Create Invoice</Button>
+                 )}
+                 {invoice && (
+                   <>
+                     <Button size="sm" asChild>
+                       <Link href={`/invoices/${invoice.id}/print`} target="_blank">Print Invoice</Link>
+                     </Button>
+                     {invoice.status !== 'paid' && (
+                       <Button size="sm" variant="secondary" onClick={handleMarkPaid}>Mark as Paid</Button>
+                     )}
+                   </>
+                 )}
+               </div>
              </div>
              {/* Footer Buttons */}
              <div className="px-6 py-5 bg-gray-50 dark:bg-slate-800/30 border-t border-gray-100 dark:border-slate-800 flex justify-end gap-3">

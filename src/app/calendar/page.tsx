@@ -20,6 +20,8 @@ export default async function CalendarPage() {
       color: evt.color || 'bg-indigo-500',
       description: evt.description,
       location: evt.rooms?.name || evt.location || 'Location TBD',
+      total_cost: evt.total_cost,
+      payment_status: evt.payment_status,
     }
   })
 
