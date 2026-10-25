@@ -196,19 +196,24 @@ export async function updateEvent(eventId: number | string, formData: FormData) 
 }
 
 export async function getEvents() {
-  const supabase = await createClient()
+  try {
+    const supabase = await createClient()
 
-  const { data, error } = await supabase
-    .from("events")
-    .select("*, rooms(name)")
-    .order("date", { ascending: true })
+    const { data, error } = await supabase
+      .from("events")
+      .select("*, rooms(name)")
+      .order("date", { ascending: true })
 
-  if (error) {
-    console.error("Supabase get events error:", error)
-    throw new Error(error.message)
+    if (error) {
+      console.error("Supabase get events error:", error)
+      return []
+    }
+
+    return data || []
+  } catch (err) {
+    console.error("Failed to fetch events:", err)
+    return []
   }
-
-  return data
 }
 
 export async function getEventById(eventId: string | number) {

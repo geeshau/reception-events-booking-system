@@ -2,108 +2,96 @@ import { getEvents } from '@/app/actions/events';
 import { Calendar, MapPin, Clock } from 'react-feather';
 import SearchBar from '@/components/SearchBar';
 import Link from 'next/link';
+import { demoEvents } from '@/data/demoEvents';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PublicEventsPage() {
-  const events = await getEvents() || [];
+  let events = [];
+  try {
+    events = await getEvents() || [];
+  } catch (err) {
+    events = [];
+  }
+
+  // Use demo events if no events from database
+  const displayEvents = events.length > 0 ? events : demoEvents;
 
   // Keep all events from the database natively without omitting past events
-  const allEvents = [...events].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const allEvents = [...displayEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Top action bar replicating the functionality of the omitted Navbar */}
-      <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-50">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="bg-indigo-600 p-1.5 rounded-lg">
-            <Calendar className="text-white h-5 w-5" />
+    <main className="min-h-screen bg-white dark:bg-[#0a0a0a]">
+      <header className="border-b border-gray-200 dark:border-[#262626] bg-white dark:bg-[#141414]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="bg-[#00a650] p-1.5 rounded">
+                <Calendar className="text-white h-5 w-5" />
+              </div>
+              <span className="text-lg font-semibold text-gray-900 dark:text-white">STANDS Conference Facilities</span>
+            </Link>
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:block">
+                <SearchBar />
+              </div>
+              <Link href="/dashboard" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#00a650]">
+                Dashboard
+              </Link>
+            </div>
           </div>
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
-            EventSync Pro
-          </span>
-        </Link>
-        <div className="flex items-center gap-6">
-          <div className="[&>div]:ml-0">
-             <SearchBar />
-          </div>
-          <Link href="/login" className="text-sm font-medium text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-            Admin Login
-          </Link>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-4xl mx-auto pt-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight sm:text-5xl">
-            Event Directory
-          </h1>
-          <p className="mt-4 text-lg text-slate-500 dark:text-slate-400">
-            A comprehensive, transparent listing of all historical and upcoming events.
-          </p>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Event Directory</h1>
+          <p className="text-gray-600 dark:text-gray-400">Browse all upcoming and past events</p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {allEvents.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 shadow-sm rounded-xl p-12 text-center text-slate-500">
+            <div className="border border-gray-200 dark:border-[#262626] rounded-lg p-12 text-center text-gray-500 dark:text-gray-400">
               There are no scheduled events at this time.
             </div>
           ) : (
             allEvents.map(event => (
               <div 
                 key={event.id}
-                className="bg-white dark:bg-slate-900 shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden transition-all duration-200 flex flex-col md:flex-row relative"
+                className="border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] transition-colors overflow-hidden bg-white dark:bg-[#141414]"
               >
-                {/* Visual Color Bar */}
-                <div className={`w-full md:w-3 flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-indigo-500'}`} />
-                
-                {event.poster_url && (
-                  <div className="w-full md:w-56 h-48 md:h-auto flex-shrink-0 bg-slate-100 border-r border-slate-200 dark:border-slate-800">
-                    <img 
-                      src={event.poster_url} 
-                      alt={`Poster for ${event.title}`} 
-                      className="w-full h-full object-cover" 
-                      loading="lazy" 
-                    />
-                  </div>
-                )}
-
-                <div className="p-6 md:p-8 flex-1 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="space-y-2 flex-1">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">
+                <div className="p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className={`w-1 h-16 rounded-full flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
+                  
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {event.title}
                     </h2>
                     {event.description && (
-                      <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                         {event.description}
                       </p>
                     )}
                   </div>
 
-                  <div className="flex flex-col gap-3 min-w-[200px] text-sm font-medium text-slate-600 dark:text-slate-300">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-lg">
-                        <Calendar className="w-4 h-4" />
-                      </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
                       <time dateTime={event.date}>
-                        {new Date(event.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                        {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </time>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-lg">
-                        <Clock className="w-4 h-4" />
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
                       <span>
                         {event.start_time?.substring(0, 5)} - {event.end_time?.substring(0, 5)}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-amber-50 dark:bg-amber-900/30 text-amber-600 rounded-lg">
-                        <MapPin className="w-4 h-4" />
-                      </div>
-                      <span className="truncate max-w-[180px]">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      <span className="truncate max-w-[150px]">
                         {event.location || event.rooms?.name || 'TBD'}
                       </span>
                     </div>

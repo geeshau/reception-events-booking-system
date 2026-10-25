@@ -291,3 +291,10 @@
 [2026-04-15T13:57:54.957Z] [INFO] [CLIENT_SIDECAR] User securely navigated viewport to Route: /clients
 [2026-04-15T13:58:23.156Z] [INFO] [CLIENT_SIDECAR] GUI Click Input Triggered on Button component: [Add Client]
 [2026-04-15T13:58:24.844Z] [INFO] [CLIENT_SIDECAR] GUI Click Input Triggered on Button component: [Icon-only Button]
+[2026-10-25T21:35:33.706Z] [INFO] [CLIENT_SIDECAR] User securely navigated viewport to Route: /
+[2026-10-25T21:35:54.714Z] [INFO] [CLIENT_SIDECAR] User securely navigated viewport to Route: /login
+[2026-10-25T21:47:15.988Z] [INFO] [CLIENT_SIDECAR] GUI Click Input Triggered on Button component: [Sign In]
+[2026-10-25T21:47:32.165Z] [INFO] [CLIENT_SIDECAR] GUI Navigation Input Triggered on Hyperlink: [Dashboard]
+[2026-10-25T21:47:32.308Z] [INFO] [CLIENT_SIDECAR] User securely navigated viewport to Route: /
+[2026-10-25T21:48:23.791Z] [INFO] [CLIENT_SIDECAR] User securely navigated viewport to Route: /
+[2026-10-25T21:48:24.426Z] [INFO] [CLIENT_SIDECAR] User securely navigated viewport to Route: /

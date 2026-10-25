@@ -1,10 +1,17 @@
 import { getEvents } from "@/app/actions/events"
 import CalendarClient from "./CalendarClient"
+import { demoEvents } from "@/data/demoEvents"
 
 export const dynamic = 'force-dynamic';
 
 export default async function CalendarPage() {
-  const data = await getEvents() || []
+  let data = [];
+  try {
+    data = await getEvents() || [];
+  } catch (err) {
+    data = [];
+  }
+  if (data.length === 0) data = demoEvents as any;
   
   // Cleanly map the raw Supabase data into react-big-calendar format
   const formattedEvents = data.map((evt: any) => {

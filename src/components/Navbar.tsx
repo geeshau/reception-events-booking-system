@@ -42,8 +42,8 @@ export default function Navbar() {
     };
   }, []);
 
-  // Hide Navbar completely on login and landing pages
-  if (pathname === "/login" || pathname === "/") return null;
+  // Hide Navbar on login page
+  if (pathname === "/login") return null;
 
   const navLinks = [
     { href: "/dashboard", label: "Dashboard" },
@@ -61,16 +61,16 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100 relative z-50">
+    <nav className="bg-white dark:bg-[#141414] border-b border-gray-200 dark:border-[#262626] relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <div className="bg-indigo-600 p-1.5 rounded-lg">
+              <div className="bg-[#00a650] p-1.5 rounded">
                 <Calendar className="text-white h-5 w-5" />
               </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-                EventSync Pro
+              <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                STANDS Conference Facilities
               </span>
             </Link>
           </div>
@@ -82,10 +82,10 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
                     isActive
-                      ? "text-indigo-600 bg-indigo-50"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "text-[#00a650]"
+                      : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
                   {link.label}

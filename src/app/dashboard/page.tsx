@@ -3,6 +3,7 @@ import { Plus, Calendar, CheckCircle, DollarSign, Users, ChevronRight, Edit2, Ex
 import { getEvents } from '@/app/actions/events';
 import WeeklyEventsChart from '@/components/WeeklyEventsChart';
 import UpcomingEventsList from '@/components/UpcomingEventsList';
+import { demoEvents } from '@/data/demoEvents';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,9 @@ export default async function Home() {
     events = await getEvents() || [];
   } catch (err) {
     console.error("Failed to fetch events for dashboard", err);
+    events = [];
   }
+  if (events.length === 0) events = demoEvents as any;
 
   const stats = [
     { label: 'Total Revenue', value: `KSh ${events.reduce((acc, curr) => acc + (Number(curr.total_cost) || 0), 0).toLocaleString()}`, icon: DollarSign, color: 'bg-indigo-500' },

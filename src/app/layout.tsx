@@ -6,13 +6,11 @@ import Footer from "../components/Footer";
 import LoadingIndicator from "../components/LoadingIndicator";
 
 export const metadata: Metadata = {
-  title: "EventSync Pro Manager",
+  title: "STANDS Conference Facilities",
   description: "Manage all your events in one place",
 };
 
-import { AuthProvider } from "@/lib/auth/AuthContext";
 import { ThemeProvider } from "@/components/theme-provider";
-import ClientTelemetry from "@/components/ClientTelemetry";
 
 export default function RootLayout({
   children,
@@ -23,16 +21,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AuthProvider>
-            <ClientTelemetry />
-            <Navbar />
-            {children}
-            <Footer />
-            <Suspense fallback={null}>
-              <LoadingIndicator />
-            </Suspense>
-          </AuthProvider>
-
+          <Navbar />
+          {children}
+          <Footer />
+          <Suspense fallback={null}>
+            <LoadingIndicator />
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

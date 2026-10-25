@@ -72,7 +72,7 @@ export default function LoginPage() {
               <Calendar className="h-7 w-7 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-white tracking-tight">
-              EventSync Pro
+              STANDS Conference Facilities
             </h1>
             <p className="mt-1 text-sm text-slate-400">
               {isSignUp ? "Create a new account" : "Sign in to your account to continue"}

@@ -23,7 +23,7 @@ export default function Footer() {
           <div className="space-y-8 xl:col-span-1">
             <div className="flex items-center">
               <Calendar className="text-primary-500 h-8 w-8" />
-              <span className="ml-3 text-2xl font-bold text-gray-900">EventSync Pro</span>
+              <span className="ml-3 text-2xl font-bold text-gray-900">STANDS Conference Facilities</span>
             </div>
             <p className="text-gray-500 text-base">
               Manage all your events in one place.
@@ -70,7 +70,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-200 pt-8">
           <p className="text-base text-gray-400 xl:text-center">
-            &copy; {new Date().getFullYear()} EventSync Pro. All rights reserved.
+            &copy; {new Date().getFullYear()} STANDS Conference Facilities. All rights reserved.
           </p>
         </div>
       </div>
