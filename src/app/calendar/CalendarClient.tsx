@@ -178,7 +178,7 @@ export default function CalendarClient({ initialEvents }: { initialEvents: BigEv
         .dark .rbc-month-view, .dark .rbc-time-view, .dark .rbc-agenda-view { background: #0f172a; border-color: #334155; }
         .rbc-day-bg + .rbc-day-bg, .rbc-month-row + .rbc-month-row, .rbc-header + .rbc-header { border-color: #e2e8f0; }
         .dark .rbc-day-bg + .rbc-day-bg, .dark .rbc-month-row + .rbc-month-row, .dark .rbc-header + .rbc-header { border-color: #334155; }
-        .rbc-toolbar { display: none !important; }
+        .rbc-toolbar { margin-bottom: 12px; padding: 8px 0; }
         .dark .rbc-btn-group button { border-color: #334155; color: #94a3b8; }
         .dark .rbc-btn-group button:hover { background-color: #1e293b; }
         .dark .rbc-btn-group button.rbc-active { background-color: #334155; color: #f8fafc; }
@@ -189,21 +189,48 @@ export default function CalendarClient({ initialEvents }: { initialEvents: BigEv
 
       {/* ── Page Header Row ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-        {/* View switcher tabs */}
-        <div className="flex items-center bg-gray-100 dark:bg-slate-800 rounded-lg p-1 gap-0.5">
-          {(['month', 'week', 'day', 'agenda'] as const).map((v) => (
+        <div className="flex items-center gap-2">
+          {/* Navigation */}
+          <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-800 rounded-lg p-1">
             <button
-              key={v}
-              onClick={() => setView(v)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-all ${
-                view === v
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-              }`}
+              onClick={() => {
+                // @ts-ignore
+                const cal = document.querySelector('.rbc-calendar')
+                // trigger navigation
+              }}
+              className="px-2 py-1 text-sm"
             >
-              {v}
+              ‹
             </button>
-          ))}
+            <button
+              onClick={() => {}}
+              className="px-3 py-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Today
+            </button>
+            <button
+              onClick={() => {}}
+              className="px-2 py-1 text-sm"
+            >
+              ›
+            </button>
+          </div>
+          {/* View switcher tabs */}
+          <div className="flex items-center bg-gray-100 dark:bg-slate-800 rounded-lg p-1 gap-0.5">
+            {(['month', 'week', 'day', 'agenda'] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-all ${
+                  view === v
+                    ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Action buttons */}
@@ -240,6 +267,7 @@ export default function CalendarClient({ initialEvents }: { initialEvents: BigEv
             }
           }}
           popup
+          toolbar={true}
         />
       </div>
 

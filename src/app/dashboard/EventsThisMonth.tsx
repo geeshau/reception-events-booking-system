@@ -20,7 +20,7 @@ function EventCard({ event, onClick }: EventCardProps) {
     <div onClick={() => onClick(event.id)} className="cursor-pointer">
       <div className="flex-shrink-0 w-[280px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
         {roomImage && (
-          <div className="w-full h-32 overflow-hidden">
+          <div className="w-full h-36 overflow-hidden">
             <img src={roomImage} alt={room?.name || event.location || "Event venue"} className="w-full h-full object-cover" />
           </div>
         )}
