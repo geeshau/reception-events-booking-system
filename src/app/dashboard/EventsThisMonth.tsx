@@ -25,20 +25,19 @@ function EventCard({ event, onClick }: EventCardProps) {
           </div>
         )}
         <div className="p-4">
-          <div className="flex items-start gap-2 mb-2">
-            <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
-            <h3 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-2 flex-1">
+          <div className="mb-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-2">
               {event.title}
             </h3>
           </div>
           
           {event.description && (
-            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 ml-4">
+            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
               {event.description}
             </p>
           )}
           
-          <div className="space-y-1.5 ml-4">
+          <div className="space-y-1.5">
             {date && (
               <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
                 <Calendar className="w-3 h-3" />

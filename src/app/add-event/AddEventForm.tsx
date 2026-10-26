@@ -52,6 +52,7 @@ export default function AddEventForm({ clients, rooms }: { clients: any[], rooms
             {clients.map(c => (
               <option key={c.id} value={c.id}>{c.first_name} {c.last_name} {c.company_name ? `(${c.company_name})` : ''}</option>
             ))}
+            <option value="add_new">+ Add New Client</option>
           </select>
         </div>
         <div>
@@ -72,19 +73,19 @@ export default function AddEventForm({ clients, rooms }: { clients: any[], rooms
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          <Label htmlFor="location">Location</Label>
-          <Input id="location" name="location" type="text" placeholder="Enter location" />
-        </div>
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <Label htmlFor="total_cost">Agreed Event Charge (KSh)</Label>
           <Input id="total_cost" name="total_cost" type="number" placeholder="Enter amount in shillings" defaultValue={roomId !== "none" ? rooms.find(r => r.id === roomId)?.min_price || 0 : 0} />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div>
-          <Label htmlFor="date">Date</Label>
-          <Input id="date" name="date" type="date" required />
+          <Label htmlFor="start_date">Start Date</Label>
+          <Input id="start_date" name="date" type="date" required />
+        </div>
+        <div>
+          <Label htmlFor="end_date">End Date</Label>
+          <Input id="end_date" name="end_date" type="date" />
         </div>
         <div>
           <Label htmlFor="start_time">Start Time</Label>

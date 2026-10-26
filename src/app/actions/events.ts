@@ -13,13 +13,14 @@ function validateTimes(start: string, end: string) {
 export async function addEvent(formData: FormData) {
   const title = formData.get("eventName")?.toString().trim() || ""
   const date = formData.get("date")?.toString() || ""
+  const end_date = formData.get("end_date")?.toString() || date
   const start_time = formData.get("start_time")?.toString() || ""
   const end_time = formData.get("end_time")?.toString() || ""
   const description = formData.get("description")?.toString() || ""
   const room_id = formData.get("room_id")?.toString() || null
   const client_id = formData.get("client_id")?.toString() || null
   const poster_url = formData.get("poster_url")?.toString() || null
-  const location = formData.get("location")?.toString() || null
+  const location = (room_id && room_id !== "none") ? null : (formData.get("location")?.toString() || null)
   const total_cost = parseFloat(formData.get("total_cost") as string) || 0
 
   if (!title) throw new Error("Event name is required.")

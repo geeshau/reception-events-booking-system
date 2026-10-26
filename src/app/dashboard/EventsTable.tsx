@@ -49,6 +49,7 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 dark:border-[#262626] bg-gray-50 dark:bg-[#0a0a0a]">
+                <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 w-12">#</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">Event</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden md:table-cell">Client</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden md:table-cell">Date</th>
@@ -61,15 +62,18 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
             <tbody>
               {paginatedEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">No events</td>
+                  <td colSpan={8} className="py-8 text-center text-gray-500 dark:text-gray-400">No events</td>
                 </tr>
               ) : (
-                paginatedEvents.map((event: any) => (
+                paginatedEvents.map((event: any, idx: number) => (
                   <tr 
                     key={event.id} 
                     className="border-b border-gray-100 dark:border-[#1a1a1a] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors cursor-pointer"
                     onClick={() => setSelectedEventId(event.id)}
                   >
+                    <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-sm">
+                      {startIndex + idx + 1}
+                    </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         {(event.rooms?.image_url || event.image_url) && (
@@ -112,12 +116,29 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setSelectedEventId(event.id); }} 
-                        className="text-[#00a650] hover:underline text-xs sm:text-sm"
-                      >
-                        Edit
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setSelectedEventId(event.id); }} 
+                          className="p-1 text-gray-600 hover:text-[#00a650] dark:text-gray-400 dark:hover:text-[#00a650]"
+                          title="Edit"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
+                        <button 
+                          onClick={async (e) => { 
+                            e.stopPropagation(); 
+                            if (confirm("Are you sure you want to delete this event?")) {
+                              const { deleteEvent } = await import('@/app/actions/events');
+                              await deleteEvent(event.id);
+                              window.location.reload();
+                            }
+                          }} 
+                          className="p-1 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                          title="Delete"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
