@@ -71,11 +71,22 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
                     onClick={() => setSelectedEventId(event.id)}
                   >
                     <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
-                        <div className="min-w-0">
-                          <p className="font-medium text-gray-900 dark:text-white truncate">{event.title}</p>
-                          {event.description && <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{event.description}</p>}
+                      <div className="flex items-center gap-3">
+                        {(event.rooms?.image_url || event.image_url) && (
+                          <img 
+                            src={event.rooms?.image_url || event.image_url} 
+                            alt={getLocation(event)} 
+                            className="w-10 h-10 rounded object-cover flex-shrink-0" 
+                          />
+                        )}
+                        <div className="flex items-center gap-2 min-w-0">
+                          {!event.rooms?.image_url && !event.image_url && (
+                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
+                          )}
+                          <div className="min-w-0">
+                            <p className="font-medium text-gray-900 dark:text-white truncate">{event.title}</p>
+                            {event.description && <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{event.description}</p>}
+                          </div>
                         </div>
                       </div>
                     </td>

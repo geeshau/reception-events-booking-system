@@ -136,6 +136,11 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
                 <input type="text" name="name" defaultValue={editingRoom ? editingRoom.name : ""} placeholder="e.g. Church Hall 1" required className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
               </div>
               
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image URL</label>
+                <input type="text" name="image_url" defaultValue={editingRoom ? editingRoom.image_url || "" : ""} placeholder="/images/rooms/main-hall.jpg" className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Charge (KSh)</label>

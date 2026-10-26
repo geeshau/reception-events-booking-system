@@ -102,7 +102,7 @@ export default async function Home() {
       </div>
 
       {/* Events This Month */}
-      <EventsThisMonth events={events} />
+      <EventsThisMonth events={events} clients={clients} rooms={rooms} />
 
       {/* Calendar View */}
       <section className="mb-6 sm:mb-8">
