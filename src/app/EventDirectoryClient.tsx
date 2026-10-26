@@ -27,6 +27,7 @@ export default function EventDirectoryClient({ events, clients = [], rooms = [] 
                     src={event.rooms?.image_url || event.image_url} 
                     alt={event.rooms?.name || event.location || event.title} 
                     className="w-full sm:w-24 h-32 sm:h-16 rounded object-cover flex-shrink-0" 
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                   />
                 )}
                 <div className={`w-full sm:w-1 h-1 sm:h-16 rounded-full flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />

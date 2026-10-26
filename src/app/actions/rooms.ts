@@ -4,11 +4,14 @@ import { revalidatePath } from "next/cache"
 import { writeLog } from "@/lib/logger"
 
 let rooms: any[] = [
-  { id: 1, name: "Main Hall", capacity: 200, status: "available", min_price: 5000, max_price: 8000, image_url: "https://www.husseyseating.com/wp-content/uploads/2024/10/lecture-scaled-1920x749.jpg" },
-  { id: 2, name: "Boardroom A", capacity: 20, status: "available", min_price: 1500, max_price: 2000, image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" },
-  { id: 3, name: "Conference Room B", capacity: 50, status: "available", min_price: 2500, max_price: 3500, image_url: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=800&q=80" },
+  { id: 1, name: "Main Hall", capacity: 200, status: "available", min_price: 5000, max_price: 8000, image_url: "/images/rooms/main-hall.jpg" },
+  { id: 2, name: "Conference Room A", capacity: 50, status: "available", min_price: 2500, max_price: 3500, image_url: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=800&q=80" },
+  { id: 3, name: "Conference Room B", capacity: 40, status: "available", min_price: 2000, max_price: 3000, image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" },
+  { id: 4, name: "Grand Ballroom", capacity: 300, status: "available", min_price: 10000, max_price: 15000, image_url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80" },
+  { id: 5, name: "Exhibition Hall", capacity: 150, status: "available", min_price: 6000, max_price: 9000, image_url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80" },
+  { id: 6, name: "Boardroom", capacity: 20, status: "available", min_price: 1500, max_price: 2000, image_url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80" },
 ];
-let nextRoomId = 4;
+let nextRoomId = 7;
 
 export async function getRooms() {
   return rooms.sort((a, b) => a.name.localeCompare(b.name))

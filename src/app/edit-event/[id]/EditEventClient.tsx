@@ -80,11 +80,7 @@ export default function EditEventClient({ event, clients, rooms }: { event: any,
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          <Label htmlFor="location">Location</Label>
-          <Input id="location" name="location" type="text" defaultValue={event.location || ""} placeholder="Enter location" />
-        </div>
+      <div className="grid grid-cols-1 gap-6">
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <Label htmlFor="total_cost">Agreed Event Charge (KSh)</Label>
           <Input id="total_cost" name="total_cost" type="number" defaultValue={event.total_cost || 0} placeholder="Enter amount in shillings" />

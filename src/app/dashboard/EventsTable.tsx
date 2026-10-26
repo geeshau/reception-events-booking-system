@@ -81,6 +81,7 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
                             src={event.rooms?.image_url || event.image_url} 
                             alt={getLocation(event)} 
                             className="w-10 h-10 rounded object-cover flex-shrink-0" 
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                           />
                         )}
                         <div className="flex items-center gap-2 min-w-0">

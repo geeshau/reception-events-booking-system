@@ -14,14 +14,22 @@ interface EventCardProps {
 function EventCard({ event, onClick }: EventCardProps) {
   const date = event.date ? moment(event.date) : null
   const room = event.rooms || null
-  const roomImage = room?.image_url || event.image_url
+  const roomImage = room?.image_url || event.image_url || (event.room_id ? null : null)
   
   return (
     <div onClick={() => onClick(event.id)} className="cursor-pointer">
       <div className="flex-shrink-0 w-[280px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
         {roomImage && (
           <div className="w-full h-36 overflow-hidden">
-            <img src={roomImage} alt={room?.name || event.location || "Event venue"} className="w-full h-full object-cover" />
+            <img 
+              src={roomImage} 
+              alt={room?.name || event.location || "Event venue"} 
+              className="w-full h-full object-cover" 
+              onError={(e) => { 
+                // If local image fails, try to hide gracefully
+                (e.currentTarget as HTMLImageElement).style.display = 'none'; 
+              }} 
+            />
           </div>
         )}
         <div className="p-4">

@@ -51,16 +51,16 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
 
   return (
     <>
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-end items-center bg-gray-50/50 dark:bg-slate-900/50">
-          <Button onClick={() => setIsAdding(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+      <div className="bg-white dark:bg-[#141414] rounded-xl shadow-sm border border-gray-200 dark:border-[#262626] overflow-hidden">
+        <div className="p-4 border-b border-gray-200 dark:border-[#262626] flex justify-end items-center bg-gray-50/50 dark:bg-[#141414]">
+          <Button onClick={() => setIsAdding(true)} className="bg-[#00a650] hover:bg-[#008f44] text-white">
             <Plus className="h-4 w-4 mr-2" /> Add Space
           </Button>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-slate-700/50">
+            <thead className="bg-gray-50 dark:bg-[#0f0f0f] text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-[#262626]">
               <tr>
                 <th className="px-6 py-4 font-medium">Room Name</th>
                 <th className="px-6 py-4 font-medium">Capacity</th>
@@ -73,19 +73,19 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
               {rooms.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                    <Home className="mx-auto h-8 w-8 text-gray-300 mb-2" />
+                    <Home className="mx-auto h-8 w-8 text-gray-300 dark:text-gray-600 mb-2" />
                     No rooms added. Please add booking spaces.
                   </td>
                 </tr>
               ) : (
                 rooms.map((room) => (
-                  <tr key={room.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition">
+                  <tr key={room.id} className="hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition border-b border-gray-100 dark:border-[#1a1a1a]">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mr-3">
                           <Home className="h-4 w-4" />
                         </div>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">{room.name}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{room.name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -94,7 +94,7 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-indigo-600 dark:text-indigo-400">
+                      <div className="font-medium text-[#00a650] dark:text-[#00a650]">
                         {room.min_price?.toLocaleString() || 0} - {room.max_price?.toLocaleString() || 0} <span className="text-[10px] opacity-70">KSh</span>
                       </div>
                     </td>
@@ -105,7 +105,7 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Button variant="ghost" size="icon" onClick={() => openEditModal(room)} className="text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 mr-1">
+                      <Button variant="ghost" size="icon" onClick={() => openEditModal(room)} className="text-gray-500 hover:text-[#00a650] hover:bg-green-50 dark:hover:bg-green-900/20 mr-1">
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(room.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20">
@@ -122,10 +122,10 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
 
       {isAdding && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-xl max-w-md w-full shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
+          <div className="bg-white dark:bg-[#141414] rounded-xl max-w-md w-full shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-gray-200 dark:border-[#262626]">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-[#262626] flex justify-between items-center">
               <h2 className="text-lg font-semibold dark:text-white">{editingRoom ? "Edit Room Details" : "Add Space or Room"}</h2>
-              <button onClick={closeForm} className="text-gray-400 hover:text-gray-600">
+              <button onClick={closeForm} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                 <X className="h-5 w-5" />
               </button>
             </div>

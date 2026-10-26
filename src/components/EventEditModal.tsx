@@ -134,11 +134,7 @@ export default function EventEditModal({ eventId, isOpen, onClose, clients = [],
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="location">Location</Label>
-                  <Input id="location" name="location" type="text" defaultValue={event.location || ""} />
-                </div>
+              <div className="grid grid-cols-1 gap-4">
                 <div>
                   <Label htmlFor="total_cost">Event Charge (KSh)</Label>
                   <Input id="total_cost" name="total_cost" type="number" defaultValue={event.total_cost || 0} />

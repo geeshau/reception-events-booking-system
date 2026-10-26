@@ -25,6 +25,8 @@ export async function addEvent(formData: FormData) {
 
   if (!title) throw new Error("Event name is required.")
   if (!date) throw new Error("Date is required.")
+  if (!client_id || client_id === "none") throw new Error("Client is required.")
+  if (!room_id || room_id === "none") throw new Error("Room is required.")
   validateTimes(start_time, end_time)
 
   if (room_id && room_id !== "none" && date && start_time && end_time) {
@@ -108,6 +110,8 @@ export async function updateEvent(eventId: number | string, formData: FormData) 
 
   if (!title) throw new Error("Event name is required.")
   if (!date) throw new Error("Date is required.")
+  if (!client_id || client_id === "none") throw new Error("Client is required.")
+  if (!room_id || room_id === "none") throw new Error("Room is required.")
   validateTimes(start_time, end_time)
 
   if (room_id && room_id !== "none" && date && start_time && end_time) {

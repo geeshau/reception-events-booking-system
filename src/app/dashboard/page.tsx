@@ -1,14 +1,12 @@
 import Link from 'next/link';
-import { Plus, Calendar, CheckCircle, DollarSign, Users, ChevronRight, Edit2, ExternalLink } from 'react-feather';
+import { Plus, Calendar, CheckCircle, DollarSign, Users, ChevronRight, Edit2, ExternalLink, TrendingUp } from 'react-feather';
 import { getEvents } from '@/app/actions/events';
 import { getClients } from '@/app/actions/clients';
 import { getRooms } from '@/app/actions/rooms';
-import WeeklyEventsChart from '@/components/WeeklyEventsChart';
-import UpcomingEventsList from '@/components/UpcomingEventsList';
 import { demoEvents } from '@/data/demoEvents';
-import DashboardCalendar from './DashboardCalendar';
 import EventsThisMonth from './EventsThisMonth';
 import EventsTable from './EventsTable';
+import DashboardCharts from './DashboardCharts';
 import moment from 'moment';
 
 export const dynamic = 'force-dynamic';
@@ -55,12 +53,45 @@ export default async function Home() {
 
   const stats = [
     { label: 'Total Revenue', value: `KSh ${events.reduce((acc, curr) => acc + (Number(curr.total_cost) || 0), 0).toLocaleString()}`, icon: DollarSign, color: 'bg-[#00a650]' },
-    { label: 'Upcoming Events', value: events.filter(e => new Date(e.date) >= new Date(new Date().setHours(0,0,0,0))).length.toString(), icon: Calendar, color: 'bg-blue-500' },
+    { label: 'Upcoming Events', value: events.filter(e => e.date && new Date(e.date) >= new Date(new Date().setHours(0,0,0,0))).length.toString(), icon: Calendar, color: 'bg-blue-500' },
     { label: 'Paid Revenue', value: `KSh ${events.filter(e => e.payment_status === 'paid').reduce((acc, curr) => acc + (Number(curr.total_cost) || 0), 0).toLocaleString()}`, icon: CheckCircle, color: 'bg-emerald-500' },
     { label: 'Pending Payment', value: `KSh ${events.filter(e => e.payment_status !== 'paid').reduce((acc, curr) => acc + (Number(curr.total_cost) || 0), 0).toLocaleString()}`, icon: ExternalLink, color: 'bg-rose-500' },
   ];
 
   const sortedEvents = [...events].sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+  // Revenue trend data (last 6 months)
+  const revenueTrendData = (() => {
+    const months: any[] = []
+    for (let i = 5; i >= 0; i--) {
+      const d = moment().subtract(i, 'months')
+      const monthKey = d.format('YYYY-MM')
+      const monthLabel = d.format('MMM')
+      const monthRevenue = events
+        .filter(e => e.date && moment(e.date).format('YYYY-MM') === monthKey)
+        .reduce((acc, curr) => acc + (Number(curr.total_cost) || 0), 0)
+      months.push({ name: monthLabel, revenue: monthRevenue })
+    }
+    return months
+  })()
+
+  // Top 5 clients
+  const clientRevenue: Record<string, number> = {}
+  events.forEach(e => {
+    if (e.client_id) {
+      clientRevenue[e.client_id] = (clientRevenue[e.client_id] || 0) + (Number(e.total_cost) || 0)
+    }
+  })
+  const topClients = Object.entries(clientRevenue)
+    .map(([id, revenue]) => {
+      const client = clients.find(c => String(c.id) === String(id))
+      const name = client 
+        ? `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.company_name || 'Unknown'
+        : 'Unknown'
+      return { id, name, revenue }
+    })
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5)
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -104,14 +135,8 @@ export default async function Home() {
       {/* Events This Month */}
       <EventsThisMonth events={events} clients={clients} rooms={rooms} />
 
-      {/* Calendar View */}
-      <section className="mb-6 sm:mb-8">
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Calendar</h2>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">Click an event to edit</p>
-        </div>
-        <DashboardCalendar events={formattedCalendarEvents as any} />
-      </section>
+      {/* Charts and Top Clients */}
+      <DashboardCharts revenueTrendData={revenueTrendData} topClients={topClients} />
 
       {/* Events List Below Statistics */}
       <EventsTable events={events} clients={clients} rooms={rooms} />
