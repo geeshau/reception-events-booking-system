@@ -1,24 +1,22 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { writeLog } from "@/lib/logger"
 
+let rooms: any[] = [
+  { id: 1, name: "Main Hall", capacity: 200, status: "available", min_price: 5000, max_price: 8000 },
+  { id: 2, name: "Boardroom A", capacity: 20, status: "available", min_price: 1500, max_price: 2000 },
+  { id: 3, name: "Conference Room B", capacity: 50, status: "available", min_price: 2500, max_price: 3500 },
+];
+let nextRoomId = 4;
+
 export async function getRooms() {
-  const supabase = await createClient()
-  const { data, error } = await supabase.from('rooms').select('*').order('name', { ascending: true })
-  
-  if (error) {
-    console.error("Error fetching rooms:", error)
-    return []
-  }
-  return data
+  return rooms.sort((a, b) => a.name.localeCompare(b.name))
 }
 
 export async function addRoom(formData: FormData) {
-  const supabase = await createClient()
-  
   const roomData = {
+    id: nextRoomId++,
     name: formData.get("name") as string,
     capacity: parseInt(formData.get("capacity") as string) || 0,
     status: formData.get("status") || "available",
@@ -26,32 +24,24 @@ export async function addRoom(formData: FormData) {
     max_price: parseFloat(formData.get("max_price") as string) || 0,
   }
 
-  const { error } = await supabase.from('rooms').insert([roomData])
-  
-  if (error) throw new Error(error.message)
-  
+  rooms.push(roomData)
   revalidatePath("/rooms")
   return true
 }
 
 export async function deleteRoom(id: string) {
-  const supabase = await createClient()
-  const { error } = await supabase.from('rooms').delete().eq('id', id)
-  
-  if (error) {
-    writeLog(`Failed to delete room ID ${id}: ${error.message}`, 'ERROR')
-    throw new Error(error.message)
-  }
-  
+  rooms = rooms.filter((r) => String(r.id) !== String(id))
   writeLog(`System purged Physical Room UUID: ${id}`, 'WARN')
   revalidatePath("/rooms")
   return true
 }
 
 export async function updateRoom(id: string, formData: FormData) {
-  const supabase = await createClient()
-
-  const roomData = {
+  const index = rooms.findIndex((r) => String(r.id) === String(id))
+  if (index === -1) throw new Error("Room not found")
+  
+  rooms[index] = {
+    ...rooms[index],
     name: formData.get("name") as string,
     capacity: parseInt(formData.get("capacity") as string) || 0,
     status: formData.get("status") || "available",
@@ -59,14 +49,8 @@ export async function updateRoom(id: string, formData: FormData) {
     max_price: parseFloat(formData.get("max_price") as string) || 0,
   }
 
-  const { error } = await supabase.from('rooms').update(roomData).eq('id', id)
-
-  if (error) {
-    writeLog(`Configuration failure modifying Room ID ${id}: ${error.message}`, 'ERROR')
-    throw new Error(error.message)
-  }
-
-  writeLog(`Configuration modified for physical Room space mapping: ${roomData.name} (ID: ${id})`, 'SUCCESS')
+  writeLog(`Configuration modified for physical Room space mapping: ${rooms[index].name} (ID: ${id})`, 'SUCCESS')
   revalidatePath("/rooms")
   return true
 }
+

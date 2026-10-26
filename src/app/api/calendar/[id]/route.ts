@@ -1,24 +1,17 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { getEventById } from '@/app/actions/events'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
-  const supabase = await createClient()
-
-  // Fetch event + relations
-  const { data: event, error } = await supabase
-    .from('events')
-    .select(`
-      *,
-      rooms ( name ),
-      clients ( first_name, last_name )
-    `)
-    .eq('id', id)
-    .single()
-
-  if (error || !event) {
+  try {
+    const event = await getEventById(id)
+  } catch (e) {
+    return new NextResponse('Event not found or database error', { status: 404 })
+  }
+  const event = await getEventById(id).catch(() => null)
+  if (!event) {
     return new NextResponse('Event not found or database error', { status: 404 })
   }
 

@@ -2,16 +2,34 @@ import { getRooms } from "@/app/actions/rooms"
 import { getClients } from "@/app/actions/clients"
 import { getEventById } from "@/app/actions/events"
 import EditEventClient from "@/app/edit-event/[id]/EditEventClient"
+import { demoEvents } from "@/data/demoEvents"
 
 export default async function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
   const unwrappedParams = await params
   
-  // Safely execute all three network promises simultaneously
-  const [eventData, rooms, clients] = await Promise.all([
-    getEventById(unwrappedParams.id),
-    getRooms(),
-    getClients()
-  ])
+  let eventData = null;
+  let rooms = [];
+  let clients = [];
+  
+  try {
+    const [event, roomsData, clientsData] = await Promise.all([
+      getEventById(unwrappedParams.id),
+      getRooms(),
+      getClients()
+    ])
+    eventData = event;
+    rooms = roomsData || [];
+    clients = clientsData || [];
+  } catch (err) {
+    // Use demo data if database fails
+    eventData = demoEvents.find(e => e.id.toString() === unwrappedParams.id) || demoEvents[0];
+    rooms = [];
+    clients = [];
+  }
+
+  if (!eventData) {
+    eventData = demoEvents.find(e => e.id.toString() === unwrappedParams.id) || demoEvents[0];
+  }
 
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-500">

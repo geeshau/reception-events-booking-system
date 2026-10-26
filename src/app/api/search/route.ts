@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { getEvents } from '@/app/actions/events'
+import { getClients } from '@/app/actions/clients'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,21 +10,7 @@ export async function GET(request: Request) {
   
   if (q.length < 2) return NextResponse.json({ results: [] })
 
-  const supabase = await createClient()
-
-  // Full text search or basic ilike matching for Events
-  const { data: events, error: eventError } = await supabase
-    .from('events')
-    .select('id, title, date')
-    .ilike('title', `%${q}%`)
-    .limit(4)
-
-  // Matching for Clients
-  const { data: clients, error: clientError } = await supabase
-    .from('clients')
-    .select('id, first_name, last_name')
-    .or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%`)
-    .limit(3)
+  const [events, clients] = await Promise.all([getEvents(), getClients()])
 
   interface SearchResult {
     type: 'event' | 'client';
@@ -34,12 +21,19 @@ export async function GET(request: Request) {
 
   const results: SearchResult[] = []
 
-  if (events) {
-    events.forEach(e => results.push({ type: 'event', id: e.id, title: e.title, subtitle: e.date }))
-  }
-  if (clients) {
-    clients.forEach(c => results.push({ type: 'client', id: c.id, title: `${c.first_name} ${c.last_name}`, subtitle: 'Client CRM Profile' }))
-  }
+  const ql = q.toLowerCase()
+  events.forEach((e: any) => {
+    if ((e.title || '').toLowerCase().includes(ql)) {
+      results.push({ type: 'event', id: e.id, title: e.title, subtitle: e.date })
+    }
+  })
+  clients.forEach((c: any) => {
+    const name = `${c.first_name || ''} ${c.last_name || ''}`.toLowerCase()
+    if (name.includes(ql)) {
+      results.push({ type: 'client', id: c.id, title: `${c.first_name || ''} ${c.last_name || ''}`.trim(), subtitle: 'Client' })
+    }
+  })
 
-  return NextResponse.json({ results })
+  return NextResponse.json({ results: results.slice(0, 7) })
 }
+
