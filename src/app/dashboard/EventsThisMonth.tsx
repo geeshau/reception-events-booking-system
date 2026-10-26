@@ -55,23 +55,23 @@ function EventCard({ event }: EventCardProps) {
 }
 
 export default function EventsThisMonth({ events }: { events: any[] }) {
-  const now = moment()
-  const thisMonthEvents = events
+  const now = moment().startOf('day')
+  const upcomingEvents = events
     .filter((e) => {
       if (!e.date) return false
-      const eventDate = moment(e.date)
-      return eventDate.month() === now.month() && eventDate.year() === now.year()
+      const eventDate = moment(e.date).startOf('day')
+      return eventDate.isSameOrAfter(now)
     })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
-  if (thisMonthEvents.length === 0) {
+  if (upcomingEvents.length === 0) {
     return (
       <section className="mb-6 sm:mb-8">
         <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Events This Month</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Upcoming Events</h2>
         </div>
         <div className="bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg p-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          No events scheduled for {now.format('MMMM YYYY')}
+          No upcoming events
         </div>
       </section>
     )
@@ -81,7 +81,7 @@ export default function EventsThisMonth({ events }: { events: any[] }) {
     <section className="mb-6 sm:mb-8">
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-          Events This Month ({thisMonthEvents.length})
+          Upcoming Events ({upcomingEvents.length})
         </h2>
         <Link href="/calendar" className="text-xs sm:text-sm text-[#00a650] hover:underline">
           View calendar
@@ -89,7 +89,7 @@ export default function EventsThisMonth({ events }: { events: any[] }) {
       </div>
       <div className="overflow-x-auto pb-2">
         <div className="flex gap-3">
-          {thisMonthEvents.map((event) => (
+          {upcomingEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
         </div>

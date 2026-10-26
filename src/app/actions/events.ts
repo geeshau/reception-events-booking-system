@@ -102,6 +102,7 @@ export async function updateEvent(eventId: number | string, formData: FormData) 
   const client_id = formData.get("client_id")?.toString() || null
   const poster_url = formData.get("poster_url")?.toString() || null
   const location = formData.get("location")?.toString() || null
+  const payment_status = formData.get("payment_status")?.toString() || undefined
   const total_cost = parseFloat(formData.get("total_cost") as string) || 0
 
   if (!title) throw new Error("Event name is required.")
@@ -139,6 +140,7 @@ export async function updateEvent(eventId: number | string, formData: FormData) 
     total_cost,
     room_id: room_id === "none" ? null : room_id,
     client_id: client_id === "none" ? null : client_id,
+    ...(payment_status ? { payment_status } : {}),
   })
 
   if (!updated) throw new Error("Event not found")

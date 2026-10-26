@@ -4,16 +4,39 @@ import { useState } from "react"
 import Link from "next/link"
 import moment from "moment"
 import Pagination from "@/components/Pagination"
+import EventEditModal from "@/components/EventEditModal"
 
 const ITEMS_PER_PAGE = 15
 
-export default function EventsTable({ events }: { events: any[] }) {
+export default function EventsTable({ events, clients = [], rooms = [] }: { events: any[], clients?: any[], rooms?: any[] }) {
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedEventId, setSelectedEventId] = useState<string | number | null>(null)
   const sortedEvents = [...events].sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
   
   const totalPages = Math.ceil(sortedEvents.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const paginatedEvents = sortedEvents.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  const getLocation = (event: any) => {
+    if (event.rooms?.name) return event.rooms.name
+    if (event.room_id) {
+      const room = rooms.find((r: any) => String(r.id) === String(event.room_id))
+      if (room?.name) return room.name
+    }
+    return event.location || '-'
+  }
+
+  const getClient = (event: any) => {
+    if (event.clients) {
+      const c = event.clients
+      if (typeof c === 'object') return `${c.first_name || ''} ${c.last_name || ''}`.trim() || c.company_name || '-'
+    }
+    if (event.client_id) {
+      const client = clients.find((c: any) => String(c.id) === String(event.client_id))
+      if (client) return `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.company_name || '-'
+    }
+    return '-'
+  }
 
   return (
     <section>
@@ -27,6 +50,7 @@ export default function EventsTable({ events }: { events: any[] }) {
             <thead>
               <tr className="border-b border-gray-200 dark:border-[#262626] bg-gray-50 dark:bg-[#0a0a0a]">
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">Event</th>
+                <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden md:table-cell">Client</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden md:table-cell">Date</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden lg:table-cell">Time</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden sm:table-cell">Location</th>
@@ -37,11 +61,15 @@ export default function EventsTable({ events }: { events: any[] }) {
             <tbody>
               {paginatedEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-500 dark:text-gray-400">No events</td>
+                  <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">No events</td>
                 </tr>
               ) : (
                 paginatedEvents.map((event: any) => (
-                  <tr key={event.id} className="border-b border-gray-100 dark:border-[#1a1a1a] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
+                  <tr 
+                    key={event.id} 
+                    className="border-b border-gray-100 dark:border-[#1a1a1a] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors cursor-pointer"
+                    onClick={() => setSelectedEventId(event.id)}
+                  >
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
@@ -52,13 +80,16 @@ export default function EventsTable({ events }: { events: any[] }) {
                       </div>
                     </td>
                     <td className="py-3 px-4 text-gray-600 dark:text-gray-400 hidden md:table-cell">
+                      <span className="truncate max-w-[150px] block">{getClient(event)}</span>
+                    </td>
+                    <td className="py-3 px-4 text-gray-600 dark:text-gray-400 hidden md:table-cell">
                       {event.date ? moment(event.date).format('MMM DD, YYYY') : '-'}
                     </td>
                     <td className="py-3 px-4 text-gray-600 dark:text-gray-400 hidden lg:table-cell">
                       {event.start_time?.substring(0,5)} - {event.end_time?.substring(0,5)}
                     </td>
                     <td className="py-3 px-4 text-gray-600 dark:text-gray-400 hidden sm:table-cell">
-                      <span className="truncate max-w-[120px] block">{event.rooms?.name || event.location || '-'}</span>
+                      <span className="truncate max-w-[120px] block">{getLocation(event)}</span>
                     </td>
                     <td className="py-3 px-4">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
@@ -70,7 +101,12 @@ export default function EventsTable({ events }: { events: any[] }) {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <Link href={`/edit-event/${event.id}`} className="text-[#00a650] hover:underline text-xs sm:text-sm">Edit</Link>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setSelectedEventId(event.id); }} 
+                        className="text-[#00a650] hover:underline text-xs sm:text-sm"
+                      >
+                        Edit
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -80,6 +116,13 @@ export default function EventsTable({ events }: { events: any[] }) {
         </div>
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
+      <EventEditModal 
+        eventId={selectedEventId} 
+        isOpen={!!selectedEventId} 
+        onClose={() => setSelectedEventId(null)} 
+        clients={clients}
+        rooms={rooms}
+      />
     </section>
   )
 }

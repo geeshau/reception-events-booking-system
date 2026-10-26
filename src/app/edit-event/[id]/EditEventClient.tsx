@@ -65,9 +65,9 @@ export default function EditEventClient({ event, clients, rooms }: { event: any,
           </select>
         </div>
         <div>
-          <Label htmlFor="room_id">Select Room / Location Space</Label>
+          <Label htmlFor="room_id">Select Room / Space</Label>
           <select id="room_id" name="room_id" onChange={(e) => setRoomId(e.target.value)} value={roomId} className="w-full flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-            <option value="none">-- External / Offsite Location --</option>
+            <option value="none">-- None --</option>
             {rooms.map(r => (
               <option key={r.id} value={r.id}>{r.name} (Cap: {r.capacity})</option>
             ))}
@@ -80,18 +80,15 @@ export default function EditEventClient({ event, clients, rooms }: { event: any,
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-        {roomId === "none" ? (
-          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <Label htmlFor="location">External / Custom Location</Label>
-            <Input id="location" name="location" type="text" defaultValue={event.location || ""} placeholder="e.g. Virtual Zoom Link or external address" />
-          </div>
-        ) : (
-          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <Label htmlFor="total_cost">Agreed Event Charge (KSh)</Label>
-            <Input id="total_cost" name="total_cost" type="number" defaultValue={event.total_cost || 0} placeholder="Enter amount in shillings" />
-          </div>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+          <Label htmlFor="location">Location</Label>
+          <Input id="location" name="location" type="text" defaultValue={event.location || ""} placeholder="Enter location" />
+        </div>
+        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+          <Label htmlFor="total_cost">Agreed Event Charge (KSh)</Label>
+          <Input id="total_cost" name="total_cost" type="number" defaultValue={event.total_cost || 0} placeholder="Enter amount in shillings" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

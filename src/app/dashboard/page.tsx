@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { Plus, Calendar, CheckCircle, DollarSign, Users, ChevronRight, Edit2, ExternalLink } from 'react-feather';
 import { getEvents } from '@/app/actions/events';
+import { getClients } from '@/app/actions/clients';
+import { getRooms } from '@/app/actions/rooms';
 import WeeklyEventsChart from '@/components/WeeklyEventsChart';
 import UpcomingEventsList from '@/components/UpcomingEventsList';
 import { demoEvents } from '@/data/demoEvents';
@@ -12,12 +14,24 @@ import moment from 'moment';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  let events = [];
+  let events: any[] = [];
+  let clients: any[] = [];
+  let rooms: any[] = [];
   try {
     events = await getEvents() || [];
   } catch (err) {
     console.error("Failed to fetch events for dashboard", err);
     events = [];
+  }
+  try {
+    clients = await getClients() || [];
+  } catch (err) {
+    clients = [];
+  }
+  try {
+    rooms = await getRooms() || [];
+  } catch (err) {
+    rooms = [];
   }
   if (events.length === 0) events = demoEvents as any;
 
@@ -100,7 +114,7 @@ export default async function Home() {
       </section>
 
       {/* Events List Below Statistics */}
-      <EventsTable events={events} />
+      <EventsTable events={events} clients={clients} rooms={rooms} />
     </main>
   );
 }
