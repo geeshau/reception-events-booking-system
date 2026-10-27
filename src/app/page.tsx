@@ -29,7 +29,16 @@ export default async function PublicEventsPage() {
   }
 
   // Use demo events if no events from database
-  const displayEvents = events.length > 0 ? events : demoEvents;
+  let displayEvents = events.length > 0 ? events : demoEvents;
+
+  // Attach rooms to events
+  displayEvents = displayEvents.map((e: any) => {
+    if (e.room_id && !e.rooms) {
+      const room = rooms.find((r: any) => String(r.id) === String(e.room_id))
+      if (room) e.rooms = room
+    }
+    return e
+  });
 
   // Keep all events from the database natively without omitting past events
   const allEvents = [...displayEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());

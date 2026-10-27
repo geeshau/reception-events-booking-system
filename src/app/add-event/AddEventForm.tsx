@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 import { addEvent } from "@/app/actions/events"
 
 export default function AddEventForm({ clients, rooms }: { clients: any[], rooms: any[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorText, setErrorText] = useState("")
   const [roomId, setRoomId] = useState("none")
+  const [expectedPeople, setExpectedPeople] = useState(50)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -75,6 +77,23 @@ export default function AddEventForm({ clients, rooms }: { clients: any[], rooms
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <Label htmlFor="total_cost">Agreed Event Charge (KSh)</Label>
           <Input id="total_cost" name="total_cost" type="number" placeholder="Enter amount in shillings" defaultValue={roomId !== "none" ? rooms.find(r => r.id === roomId)?.min_price || 0 : 0} />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="expected_people">Number of People Expected ({expectedPeople})</Label>
+        <Slider 
+          id="expected_people" 
+          name="expected_people" 
+          min={1} 
+          max={1000} 
+          step={1} 
+          value={expectedPeople}
+          onChange={(e: any) => setExpectedPeople(parseInt(e.target.value))}
+        />
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>1</span>
+          <span>1000</span>
         </div>
       </div>
 

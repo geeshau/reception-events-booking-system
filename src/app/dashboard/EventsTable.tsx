@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import moment from "moment"
+import { Users } from "react-feather"
 import Pagination from "@/components/Pagination"
 import EventEditModal from "@/components/EventEditModal"
 
@@ -55,6 +56,7 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden md:table-cell">Date</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden lg:table-cell">Time</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden sm:table-cell">Location</th>
+                <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400 hidden md:table-cell">People</th>
                 <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">Status</th>
                 <th className="text-right py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">Action</th>
               </tr>
@@ -62,7 +64,7 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
             <tbody>
               {paginatedEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gray-500 dark:text-gray-400">No events</td>
+                  <td colSpan={9} className="py-8 text-center text-gray-500 dark:text-gray-400">No events</td>
                 </tr>
               ) : (
                 paginatedEvents.map((event: any, idx: number) => (
@@ -76,16 +78,25 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        {(event.rooms?.image_url || event.image_url) && (
+                        {(event.rooms?.image_url || event.image_url || event.poster_url) && (
                           <img 
-                            src={event.rooms?.image_url || event.image_url} 
+                            key={`${event.id}-${event.rooms?.image_url || event.image_url || event.poster_url}`}
+                            src={event.rooms?.image_url || event.image_url || event.poster_url} 
                             alt={getLocation(event)} 
                             className="w-10 h-10 rounded object-cover flex-shrink-0" 
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                            onError={(e) => { 
+                              const target = e.currentTarget as HTMLImageElement
+                              if (!target.dataset.fallback) {
+                                target.dataset.fallback = 'true'
+                                target.src = '/images/placeholder-room.svg'
+                              } else {
+                                target.style.display = 'none'
+                              }
+                            }}
                           />
                         )}
                         <div className="flex items-center gap-2 min-w-0">
-                          {!event.rooms?.image_url && !event.image_url && (
+                          {!event.rooms?.image_url && !event.image_url && !event.poster_url && (
                             <div className={`w-2 h-2 rounded-full flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
                           )}
                           <div className="min-w-0">
@@ -106,6 +117,12 @@ export default function EventsTable({ events, clients = [], rooms = [] }: { even
                     </td>
                     <td className="py-3 px-4 text-gray-600 dark:text-gray-400 hidden sm:table-cell">
                       <span className="truncate max-w-[120px] block">{getLocation(event)}</span>
+                    </td>
+                    <td className="py-3 px-4 text-gray-600 dark:text-gray-400 hidden md:table-cell">
+                      <span className="flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5" />
+                        {event.expected_people || event.attendees || '-'}
+                      </span>
                     </td>
                     <td className="py-3 px-4">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${

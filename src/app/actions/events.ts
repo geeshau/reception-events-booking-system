@@ -22,6 +22,7 @@ export async function addEvent(formData: FormData) {
   const poster_url = formData.get("poster_url")?.toString() || null
   const location = (room_id && room_id !== "none") ? null : (formData.get("location")?.toString() || null)
   const total_cost = parseFloat(formData.get("total_cost") as string) || 0
+  const expected_people = parseInt(formData.get("expected_people") as string) || null
 
   if (!title) throw new Error("Event name is required.")
   if (!date) throw new Error("Date is required.")
@@ -63,6 +64,7 @@ export async function addEvent(formData: FormData) {
     color: "bg-blue-500",
     status: "confirmed",
     payment_status: "pending",
+    expected_people,
   })
 
   writeLog(`System booked new master timeline Event: '${title}' set for ${date}`, 'SUCCESS')
@@ -107,6 +109,7 @@ export async function updateEvent(eventId: number | string, formData: FormData) 
   const location = formData.get("location")?.toString() || null
   const payment_status = formData.get("payment_status")?.toString() || undefined
   const total_cost = parseFloat(formData.get("total_cost") as string) || 0
+  const expected_people = parseInt(formData.get("expected_people") as string) || null
 
   if (!title) throw new Error("Event name is required.")
   if (!date) throw new Error("Date is required.")
@@ -145,6 +148,7 @@ export async function updateEvent(eventId: number | string, formData: FormData) 
     total_cost,
     room_id: room_id === "none" ? null : room_id,
     client_id: client_id === "none" ? null : client_id,
+    expected_people,
     ...(payment_status ? { payment_status } : {}),
   })
 

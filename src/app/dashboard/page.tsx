@@ -32,6 +32,15 @@ export default async function Home() {
     rooms = [];
   }
   if (events.length === 0) events = demoEvents as any;
+  
+  // Attach rooms to events
+  events = events.map((e: any) => {
+    if (e.room_id && !e.rooms) {
+      const room = rooms.find((r: any) => String(r.id) === String(e.room_id))
+      if (room) e.rooms = room
+    }
+    return e
+  })
 
   const formattedCalendarEvents = events.map((evt: any) => {
     const [year, month, day] = (evt.date || '').split('-').map((n: string) => parseInt(n))

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 import { getEventById, updateEvent, deleteEvent } from "@/app/actions/events"
 import { useRouter } from "next/navigation"
 
@@ -23,6 +24,7 @@ export default function EventEditModal({ eventId, isOpen, onClose, clients = [],
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorText, setErrorText] = useState("")
   const [roomId, setRoomId] = useState("none")
+  const [expectedPeople, setExpectedPeople] = useState(50)
   const router = useRouter()
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function EventEditModal({ eventId, isOpen, onClose, clients = [],
         const data = await getEventById(eventId)
         setEvent(data)
         setRoomId(data?.room_id ? String(data.room_id) : "none")
+        setExpectedPeople(data?.expected_people || data?.attendees || 50)
       } catch (e) {
         console.error(e)
       } finally {
@@ -138,6 +141,23 @@ export default function EventEditModal({ eventId, isOpen, onClose, clients = [],
                 <div>
                   <Label htmlFor="total_cost">Event Charge (KSh)</Label>
                   <Input id="total_cost" name="total_cost" type="number" defaultValue={event.total_cost || 0} />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="expected_people">Number of People Expected ({expectedPeople})</Label>
+                <Slider 
+                  id="expected_people" 
+                  name="expected_people" 
+                  min={1} 
+                  max={1000} 
+                  step={1} 
+                  value={expectedPeople}
+                  onChange={(e: any) => setExpectedPeople(parseInt(e.target.value))}
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>1</span>
+                  <span>1000</span>
                 </div>
               </div>
 

@@ -79,12 +79,25 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
                 </tr>
               ) : (
                 rooms.map((room) => (
-                  <tr key={room.id} className="hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition border-b border-gray-100 dark:border-[#1a1a1a]">
+                  <tr 
+                    key={room.id} 
+                    className="hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition border-b border-gray-100 dark:border-[#1a1a1a] cursor-pointer"
+                    onClick={() => openEditModal(room)}
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mr-3">
-                          <Home className="h-4 w-4" />
-                        </div>
+                        {room.image_url ? (
+                          <img 
+                            src={room.image_url} 
+                            alt={room.name} 
+                            className="h-10 w-10 rounded-lg object-cover mr-3 flex-shrink-0" 
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mr-3">
+                            <Home className="h-4 w-4" />
+                          </div>
+                        )}
                         <span className="font-medium text-gray-900 dark:text-white">{room.name}</span>
                       </div>
                     </td>
@@ -105,10 +118,10 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Button variant="ghost" size="icon" onClick={() => openEditModal(room)} className="text-gray-500 hover:text-[#00a650] hover:bg-green-50 dark:hover:bg-green-900/20 mr-1">
+                      <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openEditModal(room); }} className="text-gray-500 hover:text-[#00a650] hover:bg-green-50 dark:hover:bg-green-900/20 mr-1">
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(room.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20">
+                      <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleDelete(room.id); }} className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </td>

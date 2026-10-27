@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Calendar, MapPin, Clock } from 'react-feather'
+import { Calendar, MapPin, Clock, Users } from 'react-feather'
 import EventEditModal from "@/components/EventEditModal"
 
 export default function EventDirectoryClient({ events, clients = [], rooms = [] }: { events: any[], clients?: any[], rooms?: any[] }) {
@@ -22,12 +22,21 @@ export default function EventDirectoryClient({ events, clients = [], rooms = [] 
               className="border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] transition-colors overflow-hidden bg-white dark:bg-[#141414] cursor-pointer"
             >
               <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                {(event.rooms?.image_url || event.image_url) && (
+                {(event.rooms?.image_url || event.image_url || event.poster_url) && (
                   <img 
-                    src={event.rooms?.image_url || event.image_url} 
+                    key={`${event.id}-${event.rooms?.image_url || event.image_url || event.poster_url}`}
+                    src={event.rooms?.image_url || event.image_url || event.poster_url} 
                     alt={event.rooms?.name || event.location || event.title} 
                     className="w-full sm:w-24 h-32 sm:h-16 rounded object-cover flex-shrink-0" 
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    onError={(e) => { 
+                      const target = e.currentTarget as HTMLImageElement
+                      if (!target.dataset.fallback) {
+                        target.dataset.fallback = 'true'
+                        target.src = '/images/placeholder-room.svg'
+                      } else {
+                        target.style.display = 'none'
+                      }
+                    }}
                   />
                 )}
                 <div className={`w-full sm:w-1 h-1 sm:h-16 rounded-full flex-shrink-0 ${event.color?.replace('bg-', 'bg-') || 'bg-[#00a650]'}`} />
@@ -63,8 +72,12 @@ export default function EventDirectoryClient({ events, clients = [], rooms = [] 
                     <span className="truncate max-w-[200px] sm:max-w-[150px]">
                       {event.rooms?.name || event.location || 'TBD'}
                     </span>
+                  </div>                {(event.expected_people || event.attendees) && (
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>{event.expected_people || event.attendees} people</span>
                   </div>
-                </div>
+                )}                </div>
               </div>
             </div>
           ))

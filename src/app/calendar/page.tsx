@@ -13,6 +13,15 @@ export default async function CalendarPage() {
   }
   if (!data || data.length === 0) data = demoEvents as any;
   
+  const rooms = await getRooms() || []
+  data = data.map((evt: any) => {
+    if (evt.room_id && !evt.rooms) {
+      const room = rooms.find((r: any) => String(r.id) === String(evt.room_id))
+      if (room) evt.rooms = room
+    }
+    return evt
+  })
+  
   // Cleanly map the raw data into react-big-calendar format
   const formattedEvents = data.map((evt: any) => {
     if (!evt.date) return null

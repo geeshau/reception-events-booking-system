@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 import { updateEvent } from "@/app/actions/events"
 
 export default function EditEventClient({ event, clients, rooms }: { event: any, clients: any[], rooms: any[] }) {
@@ -15,6 +16,7 @@ export default function EditEventClient({ event, clients, rooms }: { event: any,
   
   // Safely prepopulate all relationships based on the backend data payload
   const [roomId, setRoomId] = useState(event?.room_id || "none")
+  const [expectedPeople, setExpectedPeople] = useState(event?.expected_people || event?.attendees || 50)
   
   // Slice off any fractional seconds from Supabase time values securely
   const formatTime = (timeStr: string) => timeStr ? timeStr.substring(0, 5) : ""
@@ -84,6 +86,23 @@ export default function EditEventClient({ event, clients, rooms }: { event: any,
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <Label htmlFor="total_cost">Agreed Event Charge (KSh)</Label>
           <Input id="total_cost" name="total_cost" type="number" defaultValue={event.total_cost || 0} placeholder="Enter amount in shillings" />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="expected_people">Number of People Expected ({expectedPeople})</Label>
+        <Slider 
+          id="expected_people" 
+          name="expected_people" 
+          min={1} 
+          max={1000} 
+          step={1} 
+          value={expectedPeople}
+          onChange={(e: any) => setExpectedPeople(parseInt(e.target.value))}
+        />
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>1</span>
+          <span>1000</span>
         </div>
       </div>
 

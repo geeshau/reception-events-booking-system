@@ -2,19 +2,24 @@
 
 import { useRef, useState } from "react"
 import Link from "next/link"
-import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight } from "react-feather"
+import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight, Users } from "react-feather"
 import moment from "moment"
 import EventEditModal from "@/components/EventEditModal"
 
 interface EventCardProps {
   event: any
   onClick: (id: string | number) => void
+  rooms?: any[]
 }
 
-function EventCard({ event, onClick }: EventCardProps) {
+function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
   const date = event.date ? moment(event.date) : null
-  const room = event.rooms || null
-  const roomImage = room?.image_url || event.image_url || (event.room_id ? null : null)
+  let room = event.rooms || null
+  if (!room && event.room_id) {
+    room = rooms.find((r: any) => String(r.id) === String(event.room_id)) || null
+  }
+  const roomImage = room?.image_url || event.image_url || event.poster_url || null
+  const [imgKey, setImgKey] = useState(0)
   
   return (
     <div onClick={() => onClick(event.id)} className="cursor-pointer">
@@ -22,12 +27,18 @@ function EventCard({ event, onClick }: EventCardProps) {
         {roomImage && (
           <div className="w-full h-36 overflow-hidden">
             <img 
-              src={roomImage} 
+              key={imgKey}
+              src={roomImage}
               alt={room?.name || event.location || "Event venue"} 
               className="w-full h-full object-cover" 
               onError={(e) => { 
-                // If local image fails, try to hide gracefully
-                (e.currentTarget as HTMLImageElement).style.display = 'none'; 
+                const target = e.currentTarget as HTMLImageElement
+                if (!target.dataset.fallback) {
+                  target.dataset.fallback = 'true'
+                  target.src = '/images/placeholder-room.svg'
+                } else {
+                  target.style.display = 'none'
+                }
               }} 
             />
           </div>
@@ -64,6 +75,14 @@ function EventCard({ event, onClick }: EventCardProps) {
                 {room?.name || event.location || 'TBD'}
               </span>
             </div>
+            {(event.expected_people || event.attendees || room?.capacity) && (
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <Users className="w-3 h-3" />
+                <span>
+                  {event.expected_people || event.attendees || room?.capacity} people expected
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -132,7 +151,7 @@ export default function EventsThisMonth({ events, clients = [], rooms = [] }: { 
         >
           <div className="flex gap-3">
             {upcomingEvents.map((event) => (
-              <EventCard key={event.id} event={event} onClick={setSelectedEventId} />
+              <EventCard key={event.id} event={event} onClick={setSelectedEventId} rooms={rooms} />
             ))}
           </div>
         </div>
