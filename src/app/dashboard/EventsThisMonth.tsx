@@ -23,9 +23,9 @@ function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
   
   return (
     <div onClick={() => onClick(event.id)} className="cursor-pointer">
-      <div className="flex-shrink-0 w-[280px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
+      <div className="flex-shrink-0 w-[240px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
         {roomImage && (
-          <div className="w-full h-36 overflow-hidden">
+          <div className="w-full h-28 sm:h-36 overflow-hidden">
             <img 
               key={imgKey}
               src={roomImage}
@@ -43,15 +43,15 @@ function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
             />
           </div>
         )}
-        <div className="p-4">
-          <div className="mb-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-2">
+        <div className="p-3 sm:p-4">
+          <div className="mb-1.5 sm:mb-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm line-clamp-2">
               {event.title}
             </h3>
           </div>
           
           {event.description && (
-            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+            <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-2 mb-2 sm:mb-3">
               {event.description}
             </p>
           )}
@@ -104,7 +104,7 @@ export default function EventsThisMonth({ events, clients = [], rooms = [] }: { 
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = 340
+      const scrollAmount = window.innerWidth < 640 ? 250 : 340
       scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' })
     }
   }
