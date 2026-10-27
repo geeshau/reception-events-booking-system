@@ -167,9 +167,9 @@ export default function RoomListClient({ initialRooms }: { initialRooms: any[] }
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-800">
+              <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-[#262626]">
                 <Button type="button" variant="ghost" onClick={closeForm}>Cancel</Button>
-                <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={loading}>
+                <Button type="submit" className="bg-[#00a650] hover:bg-[#008f44] text-white" disabled={loading}>
                   {loading ? "Saving..." : (editingRoom ? "Save Changes" : "Save Room")}
                 </Button>
               </div>
