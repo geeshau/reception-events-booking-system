@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Users, Plus, Mail, Phone, Trash2, X } from "lucide-react"
 import { addClient, deleteClient } from "@/app/actions/clients"
 import { Button } from "@/components/ui/button"
+import ClientEditModal from "@/components/ClientEditModal"
 
 export default function ClientListClient({ initialClients }: { initialClients: any[] }) {
   const [clients, setClients] = useState(initialClients)

@@ -47,6 +47,22 @@ export async function addClient(formData: FormData) {
   return true
 }
 
+export async function updateClient(id: string, formData: FormData) {
+  const index = clients.findIndex((c) => String(c.id) === String(id))
+  if (index === -1) throw new Error("Client not found")
+  clients[index] = {
+    ...clients[index],
+    first_name: formData.get("first_name") as string,
+    last_name: formData.get("last_name") as string,
+    email: (formData.get("email") as string) || null,
+    phone_number: (formData.get("phone_number") as string) || null,
+    company_name: (formData.get("company_name") as string) || null,
+  }
+  writeLog(`System updated client record (ID: ${id})`, 'SUCCESS')
+  revalidatePath("/clients")
+  return true
+}
+
 export async function deleteClient(id: string) {
   clients = clients.filter((c) => String(c.id) !== String(id))
   writeLog(`System purged client record (ID: ${id})`, 'WARN')

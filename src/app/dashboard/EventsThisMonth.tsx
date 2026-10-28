@@ -23,9 +23,9 @@ function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
   
   return (
     <div onClick={() => onClick(event.id)} className="cursor-pointer">
-      <div className="flex-shrink-0 w-[200px] xs:w-[220px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
+      <div className="flex-shrink-0 w-[200px] xs:w-[220px] sm:w-[320px] h-[260px] sm:h-[380px] flex flex-col bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
         {roomImage && (
-          <div className="w-full h-24 xs:h-28 sm:h-36 overflow-hidden">
+          <div className="w-full h-24 xs:h-28 sm:h-36 flex-shrink-0 overflow-hidden">
             <img 
               key={imgKey}
               src={roomImage}
@@ -43,15 +43,15 @@ function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
             />
           </div>
         )}
-        <div className="p-2.5 sm:p-4">
+        <div className="p-2.5 sm:p-4 flex-1 flex flex-col">
           <div className="mb-1 sm:mb-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-[11px] sm:text-sm line-clamp-2 leading-tight">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm line-clamp-2 leading-tight">
               {event.title}
             </h3>
           </div>
           
           {event.description && (
-            <p className="text-[9px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-2 mb-1.5 sm:mb-3">
+            <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-2 mb-1.5 sm:mb-3">
               {event.description}
             </p>
           )}
