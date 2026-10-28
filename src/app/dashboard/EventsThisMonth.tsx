@@ -23,9 +23,9 @@ function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
   
   return (
     <div onClick={() => onClick(event.id)} className="cursor-pointer">
-      <div className="flex-shrink-0 w-[240px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
+      <div className="flex-shrink-0 w-[200px] xs:w-[220px] sm:w-[320px] bg-white dark:bg-[#141414] border border-gray-200 dark:border-[#262626] rounded-lg hover:border-gray-300 dark:hover:border-[#404040] hover:shadow-sm transition-all overflow-hidden">
         {roomImage && (
-          <div className="w-full h-28 sm:h-36 overflow-hidden">
+          <div className="w-full h-24 xs:h-28 sm:h-36 overflow-hidden">
             <img 
               key={imgKey}
               src={roomImage}
@@ -43,43 +43,43 @@ function EventCard({ event, onClick, rooms = [] }: EventCardProps) {
             />
           </div>
         )}
-        <div className="p-3 sm:p-4">
-          <div className="mb-1.5 sm:mb-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm line-clamp-2">
+        <div className="p-2.5 sm:p-4">
+          <div className="mb-1 sm:mb-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-[11px] sm:text-sm line-clamp-2 leading-tight">
               {event.title}
             </h3>
           </div>
           
           {event.description && (
-            <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-2 mb-2 sm:mb-3">
+            <p className="text-[9px] sm:text-xs text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-2 mb-1.5 sm:mb-3">
               {event.description}
             </p>
           )}
           
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             {date && (
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                <Calendar className="w-3 h-3" />
+              <div className="flex items-center gap-1.5 text-[9px] sm:text-xs text-gray-600 dark:text-gray-400">
+                <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 <span>{date.format('MMM DD, YYYY')}</span>
               </div>
             )}
-            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-              <Clock className="w-3 h-3" />
+            <div className="flex items-center gap-1.5 text-[9px] sm:text-xs text-gray-600 dark:text-gray-400">
+              <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               <span>
                 {event.start_time?.substring(0, 5)} - {event.end_time?.substring(0, 5)}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-              <MapPin className="w-3 h-3" />
+            <div className="flex items-center gap-1.5 text-[9px] sm:text-xs text-gray-600 dark:text-gray-400">
+              <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               <span className="truncate">
                 {room?.name || event.location || 'TBD'}
               </span>
             </div>
             {(event.expected_people || event.attendees || room?.capacity) && (
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                <Users className="w-3 h-3" />
+              <div className="flex items-center gap-1.5 text-[9px] sm:text-xs text-gray-600 dark:text-gray-400">
+                <Users className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 <span>
-                  {event.expected_people || event.attendees || room?.capacity} people expected
+                  {event.expected_people || event.attendees || room?.capacity} people
                 </span>
               </div>
             )}
@@ -104,7 +104,8 @@ export default function EventsThisMonth({ events, clients = [], rooms = [] }: { 
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = window.innerWidth < 640 ? 250 : 340
+      const width = window.innerWidth
+      const scrollAmount = width < 480 ? 210 : width < 640 ? 230 : 340
       scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' })
     }
   }
