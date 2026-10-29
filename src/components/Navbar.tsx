@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Bell, Menu, X, LogOut, User } from "lucide-react";
+import { Calendar, Bell, Menu, X, LogOut, User, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import SearchBar from "@/components/SearchBar";
@@ -48,6 +48,7 @@ export default function Navbar() {
     { href: "/clients", label: "Clients" },
     { href: "/rooms", label: "Rooms" },
     { href: "/reports", label: "Reports" },
+    { href: "/email-campaigns", label: "Email Campaigns" },
   ];
 
   const getInitials = () => {
